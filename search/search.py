@@ -72,7 +72,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem, stack=list(), moves=[]):
+def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -84,32 +84,35 @@ def depthFirstSearch(problem, stack=list(), moves=[]):
 
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    print "Start's childrenNodes:", problem.getchildrenNodes(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
     print "Debug: ashraf code"
-    current = problem.getStartState()
-    
-    # print "current ", current
+    from util import Stack 
+    # Create an empty stack to manage exploration of node in a tree/search space
+    stack = Stack()
+    # Use a set to keep track of visited Positions
+    visitedPositions = set()
+    startPosition = problem.getStartState()
+    # capture the position and its corresponding move so far
+    stack.push((startPosition, []))  
 
-    if(problem.isGoalState(current)):
-        # moves.append('None')
-        return moves
-    
-    listOfChildNodes = problem.getSuccessors(current)
-    
-    for child in listOfChildNodes:
-        if( child not in stack):
-            # print("add " , child)
-            stack.append(child[0])
-            moves.append(child[1])
-            result = depthFirstSearch(problem, stack, moves)
-            if len(result) != 0:
-                return result
-            stack.pop()
-            moves.pop()
-    
-    return []
+    while stack:
+        currentPosition, move = stack.pop()
+
+        if problem.isGoalState(currentPosition):
+            return move  # Return the move to the goal if found
+
+        if currentPosition not in visitedPositions:
+            visitedPositions.add(currentPosition)
+            childrenNodes = problem.getSuccessors(currentPosition)
+            for nextPosition, action, cost in childrenNodes:
+                if nextPosition not in visitedPositions:
+                    new_move = move + [action]  # Extend the move
+                    stack.push((nextPosition, new_move))
+
+    return []  # If no move is found, return an empty list
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
