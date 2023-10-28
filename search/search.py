@@ -84,9 +84,35 @@ def depthFirstSearch(problem):
 
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    print "Start's successors:", problem.successors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    print "Debug: ashraf code"
+    from util import Stack 
+    # Create an empty stack to manage exploration of node in a tree/search space
+    stack = Stack()
+    # Use a set to keep track of visited Positions
+    visitedPositions = set()
+    startPosition = problem.getStartState()
+    # capture the position and its corresponding move so far
+    stack.push((startPosition, []))  
+
+    while stack:
+        currentPosition, move = stack.pop()
+
+        if problem.isGoalState(currentPosition):
+            return move  # Return the move to the goal if found
+
+        if currentPosition not in visitedPositions:
+            visitedPositions.add(currentPosition)
+            childrenNodes = problem.getSuccessors(currentPosition)
+            for nextPosition, action, cost in childrenNodes:
+                if nextPosition not in visitedPositions:
+                    new_move = move + [action]  # Extend the move
+                    stack.push((nextPosition, new_move))
+
+    return []  # If no move is found, return an empty list
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
