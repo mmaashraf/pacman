@@ -84,7 +84,7 @@ def depthFirstSearch(problem):
 
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's childrenNodes:", problem.getchildrenNodes(problem.getStartState())
+    print "Start's successors:", problem.successors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
     print "Debug: ashraf code"
