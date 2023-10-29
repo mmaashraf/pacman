@@ -118,6 +118,33 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    
+    print "Debug: ashraf code"
+    from util import Queue 
+    # Create an Queue to manage exploration of node in a tree/search space
+    q = Queue()
+    # Use a set to keep track of visited Positions
+    visitedPositions = set()
+    startPosition = problem.getStartState()
+    # capture the position and its corresponding move so far
+    q.push((startPosition, []))  
+
+    while q:
+        currentPosition, move = q.pop()
+
+        if problem.isGoalState(currentPosition):
+            return move  # Return the move to the goal if found
+
+        if currentPosition not in visitedPositions:
+            visitedPositions.add(currentPosition)
+            childrenNodes = problem.getSuccessors(currentPosition)
+            for nextPosition, action, cost in childrenNodes:
+                if nextPosition not in visitedPositions:
+                    new_move = move + [action]  # Extend the move
+                    q.push((nextPosition, new_move))
+
+    return []  # If no move is found, return an empty list
+    
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
