@@ -122,10 +122,9 @@ def uniformCostSearch(problem):
         if goal_state: 
             return step
         
-        # get the neighbour states using the getSuccessors , returns a list of the neighbours
-        neighbour_states = problem.getSuccessors(state)
-        
         if state not in visited:
+            # get the neighbour states using the getSuccessors , returns a list of the neighbours
+            neighbour_states = problem.getSuccessors(state)
             
             # For each neighbour 
             for neighbour in neighbour_states:
@@ -153,6 +152,45 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    # Get the start state using getStartState()
+    start_state = problem.getStartState()
+    
+    # Use Priority Queue to keep track of the spots and steps taken to reach there
+    p_queue = util.PriorityQueue()
+    steps = [] # empty list as we dont have the steps to start 
+    
+    # push the start state into the queue with priority 0, as this is the start node from which we should search
+    p_queue.push((start_state, steps), nullHeuristic(start_state, problem))
+    
+    # Maintain a set of Visited states
+    visited = set()
+        
+    while not p_queue.isEmpty():
+        # get the lowest priority state with the steps taken to reach
+        state, step = p_queue.pop()
+        
+        # if we have reached our goal then just return the 
+        goal_state = problem.isGoalState(state)
+        if goal_state: 
+            return step
+        
+        if state not in visited:
+            # get the neighbour states using the getSuccessors , returns a list of the neighbours
+            neighbour_states = problem.getSuccessors(state)
+            
+            # For each neighbour 
+            for neighbour in neighbour_states:
+                its_successor = neighbour[0]
+
+                if state not in visited:
+                    # update the new states and its values so it can be push into the priority queue
+                    path = neighbour[1]
+                    new_path = step + [path]
+                    new_path_cost = problem.getCostOfActions(new_path) + heuristic(its_successor, problem)
+                    p_queue.push((its_successor, new_path), new_path_cost)
+        # add the state to visited
+        visited.add(state)             
+    return step     
     util.raiseNotDefined()
 
 
