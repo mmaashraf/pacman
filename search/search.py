@@ -151,7 +151,7 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     """ References: https://www.geeksforgeeks.org/uniform-cost-search-dijkstra-for-large-graphs/# : had a look at general template for code"""
-    """             https://www.educative.io/answers/what-is-uniform-cost-search: To understand better the search algorithm """
+    """             https://www.educative.io/answers/what-is-uniform-cost-search: To understand better, the search algorithm """
     
     # Get the start state using getStartState()
     start_state = problem.getStartState()
@@ -212,7 +212,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     p_queue = util.PriorityQueue()
     steps = [] # empty list as we dont have the steps to start 
     
-    # push the start state into the queue with priority 0, as this is the start node from which we should search
+    # push the start state into the queue with priority set to null heuristic as source nde does not have any heuristic to itself 
     p_queue.push((start_state, steps), nullHeuristic(start_state, problem))
     
     # Maintain a set of Visited states
@@ -239,6 +239,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     # update the new states and its values so it can be push into the priority queue
                     path = neighbour[1]
                     new_path = step + [path]
+                    # unlike the UCS, actions cost is computed with the heuristic provided at cmd line
                     new_path_cost = problem.getCostOfActions(new_path) + heuristic(its_successor, problem)
                     p_queue.push((its_successor, new_path), new_path_cost)
         # add the state to visited
