@@ -40,6 +40,7 @@ from game import Actions
 import util
 import time
 import search
+import pacman
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -277,6 +278,7 @@ class CornersProblem(search.SearchProblem):
         """
         Stores the walls, pacman's starting position and corners.
         """
+        self.startingGameState = startingGameState
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
@@ -295,13 +297,32 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        starting_position = self.startingPosition
+        return (starting_position, ())
+        # util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        # total corners 
+        corners = self.corners
+        
+        # current state and corner are set to the state
+        current_state, corner_seen = state 
+        
+        if current_state in corner_seen:
+            # visit if not done 
+            if current_state not in corner_seen:
+                corner_seen = corner_seen + (current_state,)
+            number_of_corners = len(corner_seen)
+            
+            # if number of corners are four then return with true 
+            if number_of_corners == 4:
+                return True 
+        return False   
+        
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -316,15 +337,23 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        cx,cy = state[0]
+        corners_visit = state[1]
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
-            "*** YOUR CODE HERE ***"
+            #x,y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(cx + dx), int(cy + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                "*** YOUR CODE HERE ***"
+                temp_successor = corners_visit
+                new_node = nextx, nexty
+                if new_node in self.corners:
+                    if new_node not in corners_visit:
+                        temp_successor = temp_successor + (new_node,)
+                successors.append(((new_node, temp_successor), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +389,30 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    # get the start state 
+    start_state = state[0]
+    
+    # number of corners 
+    num_corners = state[1]
+    
+    # get corners that are not visited 
+    corner_unv = []
+    for c in corners:
+        if c not in num_corners:
+            corner_unv.append(c)
+    # heuristic 
+    hu = 0
+    # starting game state
+    starting_game_state = problem.startingGameState
+    # loop through the unvisited corners
+    for c in corner_unv:
+        # maze length  using the mazeDistance()
+        mazeLen = mazeDistance(start_state, c, starting_game_state) 
+        if mazeLen > hu:
+            hu = mazeLen
+    return hu
+            
+    # return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
