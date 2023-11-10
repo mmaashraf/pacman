@@ -335,27 +335,41 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        # Initialize an empty list to store successor states
         successors = []
-        cx,cy = state[0]
-        corners_visit = state[1]
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #x,y = currentPosition
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(cx + dx), int(cy + dy)
-            hitsWall = self.walls[nextx][nexty]
-            if not hitsWall:
-                "*** YOUR CODE HERE ***"
-                temp_successor = corners_visit
-                new_node = nextx, nexty
-                if new_node in self.corners:
-                    if new_node not in corners_visit:
-                        temp_successor = temp_successor + (new_node,)
-                successors.append(((new_node, temp_successor), action, 1))
 
-        self._expanded += 1 # DO NOT CHANGE
+        # Extract current coordinates and visited corners from the current state
+        current_x, current_y = state[0]
+        visited_corners = state[1]
+
+        # Iterate over possible actions: NORTH, SOUTH, EAST, WEST
+        for possible_action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            # Calculate the new position based on the selected action
+            delta_x, delta_y = Actions.directionToVector(possible_action)
+            new_x, new_y = int(current_x + delta_x), int(current_y + delta_y)
+
+            # Check for collisions with walls
+            hits_wall = self.walls[new_x][new_y]
+
+            # If the new position is not blocked by a wall
+            if not hits_wall:
+                # Initialize variables to represent the updated state
+                updated_visited_corners = visited_corners
+                new_position = (new_x, new_y)
+
+                # Check if the new position is a corner and has not been visited
+                if new_position in self.corners and new_position not in visited_corners:
+                    updated_visited_corners += (new_position,)
+
+                # Construct the successor state and append it to the list
+                successor_state = (new_position, updated_visited_corners)
+                successor_action = possible_action
+                successor_cost = 1
+                successors.append((successor_state, successor_action, successor_cost))
+
+        # Increment the count of expanded nodes
+        self._expanded += 1  # DO NOT CHANGE
+        # Return the list of successor states
         return successors
 
     def getCostOfActions(self, actions):
