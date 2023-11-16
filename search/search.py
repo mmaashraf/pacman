@@ -87,7 +87,7 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.successors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    print "Debug: ashraf code"
+    # print "Debug: ashraf code"
     from util import Stack 
     # Create an empty stack to manage exploration of node in a tree/search space
     stack = Stack()
@@ -119,7 +119,7 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     
-    print "Debug: ashraf code"
+    # print "Debug: ashraf code"
     from util import Queue 
     # Create an Queue to manage exploration of node in a tree/search space
     q = Queue()
