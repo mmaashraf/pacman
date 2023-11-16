@@ -34,6 +34,7 @@ description for details.
 Good luck and happy searching!
 """
 
+import dis
 from game import Directions
 from game import Agent
 from game import Actions
@@ -506,7 +507,26 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # We start by initialising the heuristic to zero 
+    heuristic = 0 
+    
+    # Get the initial position where the pacman starts 
+    pos = problem.startingGameState
+    
+    # locate the food using the list of food coordinates
+    food = foodGrid.asList()
+    
+    # if there is no food grid available return null hueristic 
+    if len(food) <= 0 :
+        return heuristic
+    else :
+        for f in food:
+            # get the distance to the food 
+            dist = mazeDistance(position, f, pos)
+            if dist > heuristic:
+                # update the heuristic
+                heuristic = dist
+    return heuristic
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -537,6 +557,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        
+        "Using BFS"
+        return search.breadthFirstSearch(problem)
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -573,6 +596,13 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        # list of food 
+        food = self.food.asList()
+        
+        if (x,y) in food:
+            return True 
+        else : 
+            return False
         util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
